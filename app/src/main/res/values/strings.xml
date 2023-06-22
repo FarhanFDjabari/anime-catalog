@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Ani Catalog</string>
+    <string name="popular_anime_for_you">Popular Anime For You</string>
+    <string name="drawer_home">Home</string>
+    <string name="drawer_home_description">Navigate to Home</string>
+    <string name="drawer_favorite">Favorite</string>
+    <string name="drawer_favorite_description">Navigate to Favorite\n</string>
+    <string name="drawer_logout">Exit</string>
+    <string name="drawer_logout_description">Exit this account</string>
+</resources>
