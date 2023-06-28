@@ -26,11 +26,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.djabaridev.anicatalog.R
+import com.djabaridev.anicatalog.data.remote.responses.anime.AnimeRankingEnum
 import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
 
 @Composable
-fun AnimeRankingListHeader(modifier: Modifier = Modifier) {
+fun AnimeRankingListHeader(
+    modifier: Modifier = Modifier,
+    onFilterChange: (AnimeRankingEnum) -> Unit = { _ -> }
+) {
     var isPopularCategoryExpanded by remember { mutableStateOf(false) }
+    var currentFilter: AnimeRankingEnum by remember { mutableStateOf(AnimeRankingEnum.BYPOPULARITY) }
     Box {
         Row(
             modifier = modifier
@@ -62,15 +67,30 @@ fun AnimeRankingListHeader(modifier: Modifier = Modifier) {
                 ) {
                     DropdownMenuItem(
                         text = { Text("All") },
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            if (currentFilter != AnimeRankingEnum.BYPOPULARITY) {
+                                currentFilter = AnimeRankingEnum.BYPOPULARITY
+                                onFilterChange(AnimeRankingEnum.BYPOPULARITY)
+                            }
+                        },
                     )
                     DropdownMenuItem(
                         text = { Text("Airing") },
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            if (currentFilter != AnimeRankingEnum.AIRING) {
+                                currentFilter = AnimeRankingEnum.AIRING
+                                onFilterChange(AnimeRankingEnum.AIRING)
+                            }
+                        },
                     )
                     DropdownMenuItem(
                         text = { Text("Upcoming") },
-                        onClick = { /*TODO*/ },
+                        onClick =  {
+                            if (currentFilter != AnimeRankingEnum.UPCOMING) {
+                                currentFilter = AnimeRankingEnum.UPCOMING
+                                onFilterChange(AnimeRankingEnum.UPCOMING)
+                            }
+                        },
                     )
                 }
             }

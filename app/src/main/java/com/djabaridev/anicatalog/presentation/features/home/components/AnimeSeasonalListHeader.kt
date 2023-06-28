@@ -35,7 +35,11 @@ import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnimeSeasonalListHeader(modifier: Modifier = Modifier) {
+fun AnimeSeasonalListHeader(
+    modifier: Modifier = Modifier,
+    onFilterChange: (String, Int) -> Unit = { _, _ -> },
+    onSeeAll: () -> Unit = {},
+) {
     var selectedSeason by remember { mutableStateOf("spring") }
     var selectedYear by remember { mutableStateOf("2023") }
 
@@ -59,7 +63,7 @@ fun AnimeSeasonalListHeader(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onBackground,
                 ),
-                onClick = {}
+                onClick = {onSeeAll()}
             )
         }
         Row (
@@ -72,13 +76,26 @@ fun AnimeSeasonalListHeader(modifier: Modifier = Modifier) {
             SeasonDropdownButton(
                 value = selectedSeason.capitalize(Locale.current),
                 onDropdownItemClick = { item ->
-                    selectedSeason = item
-                }
+                    if (selectedSeason != item) {
+                        selectedSeason = item
+                        if (selectedYear.isNotEmpty() && selectedSeason.isNotEmpty()) {
+                            onFilterChange(selectedSeason, selectedYear.toInt())
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .width(160.dp)
+                    .weight(1f, true)
             )
             OutlinedTextField(
                 value = selectedYear,
                 onValueChange = {
-                    selectedYear = it
+                    if (it.length <= 4) {
+                        selectedYear = it
+                        if (selectedYear.length > 3 && selectedSeason.isNotEmpty()) {
+                            onFilterChange(selectedSeason, selectedYear.toInt())
+                        }
+                    }
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
@@ -91,9 +108,8 @@ fun AnimeSeasonalListHeader(modifier: Modifier = Modifier) {
                     contentDescription = "Year Selector"
                 )},
                 modifier = Modifier
-                    .width(155.dp)
+                    .weight(1f)
                     .defaultMinSize(minHeight = 56.dp)
-                    .padding(end = 16.dp)
             )
         }
     }

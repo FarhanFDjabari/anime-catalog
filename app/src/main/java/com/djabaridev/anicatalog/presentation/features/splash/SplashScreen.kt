@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.djabaridev.anicatalog.R
-import com.djabaridev.anicatalog.presentation.navigation.AniCatalogNavOption
+import com.djabaridev.anicatalog.presentation.navigation.AniCatalogNavRoute
 import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
 import kotlinx.coroutines.delay
 
@@ -41,8 +41,8 @@ fun SplashScreen(navController: NavController) {
             )
         )
         delay(1500L)
-        navController.navigate(AniCatalogNavOption.HOME_SCREEN.name) {
-            popUpTo(AniCatalogNavOption.SPLASH_SCREEN.name) { inclusive = true }
+        navController.navigate(AniCatalogNavRoute.MAIN.name) {
+            popUpTo(AniCatalogNavRoute.SPLASH.name) { inclusive = true }
         }
     }
     Box(

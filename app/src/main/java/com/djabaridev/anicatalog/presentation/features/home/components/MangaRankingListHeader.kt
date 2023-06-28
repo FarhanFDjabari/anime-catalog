@@ -25,11 +25,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.djabaridev.anicatalog.data.remote.responses.manga.MangaRankingEnum
 import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
 
 @Composable
-fun MangaRankingListHeader() {
+fun MangaRankingListHeader(
+    onFilterChange: (MangaRankingEnum) -> Unit = {},
+    onSeeAll: () -> Unit = {},
+) {
     var isMangaRankingTypeExpanded by remember { mutableStateOf(false) }
+    var currentFilter by remember { mutableStateOf(MangaRankingEnum.bypopularity) }
 
     Box {
         Row(
@@ -64,15 +69,30 @@ fun MangaRankingListHeader() {
                 ) {
                     DropdownMenuItem(
                         text = { Text("All") },
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                                  if (currentFilter != MangaRankingEnum.bypopularity) {
+                                      currentFilter = MangaRankingEnum.bypopularity
+                                      onFilterChange(currentFilter)
+                                  }
+                        },
                     )
                     DropdownMenuItem(
-                        text = { Text("Airing") },
-                        onClick = { /*TODO*/ },
+                        text = { Text("Manga") },
+                        onClick = {
+                            if (currentFilter != MangaRankingEnum.manga) {
+                                currentFilter = MangaRankingEnum.manga
+                                onFilterChange(currentFilter)
+                            }
+                        },
                     )
                     DropdownMenuItem(
-                        text = { Text("Upcoming") },
-                        onClick = { /*TODO*/ },
+                        text = { Text("Manhwa") },
+                        onClick = {
+                            if (currentFilter != MangaRankingEnum.manhwa) {
+                                currentFilter = MangaRankingEnum.manhwa
+                                onFilterChange(currentFilter)
+                            }
+                        },
                     )
                 }
                 ClickableText(
@@ -80,7 +100,7 @@ fun MangaRankingListHeader() {
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onBackground,
                     ),
-                    onClick = {}
+                    onClick = {onSeeAll()}
                 )
             }
         }

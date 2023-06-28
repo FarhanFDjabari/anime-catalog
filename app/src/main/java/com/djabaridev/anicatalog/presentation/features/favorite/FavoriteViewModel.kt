@@ -1,23 +1,18 @@
 package com.djabaridev.anicatalog.presentation.features.favorite
 
+import android.util.Log
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.djabaridev.anicatalog.domain.entities.AniMangaListItemEntity
-import com.djabaridev.anicatalog.domain.usecases.GetFavoriteAnimeList
-import com.djabaridev.anicatalog.domain.usecases.GetFavoriteMangaList
-import com.djabaridev.anicatalog.domain.usecases.UpdateAnimeIsFavorite
-import com.djabaridev.anicatalog.domain.usecases.UpdateMangaIsFavorite
+import com.djabaridev.anicatalog.domain.repositories.AniCatalogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val getFavoriteAnimeList: GetFavoriteAnimeList,
-    private val getFavoriteMangaList: GetFavoriteMangaList,
-    private val updateAnimeIsFavorite: UpdateAnimeIsFavorite,
-    private val updateMangaIsFavorite: UpdateMangaIsFavorite,
+    private val repository: AniCatalogRepository,
 ) : ViewModel() {
     private val _tabIndex: MutableLiveData<Int> = MutableLiveData(0)
     val tabIndex: LiveData<Int> = _tabIndex
@@ -37,6 +32,7 @@ class FavoriteViewModel @Inject constructor(
     val dragState : LiveData<DraggableState> = _dragState
 
     init {
+        Log.d("Favorite ViewModel", "init")
         getFavoriteAnime()
         getFavoriteManga()
     }

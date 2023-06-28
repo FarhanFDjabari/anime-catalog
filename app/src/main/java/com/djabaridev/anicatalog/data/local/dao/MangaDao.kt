@@ -19,13 +19,13 @@ interface MangaDao {
     fun getManga(id: Int): Flow<MangaListItemEntry?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertManga(manga: MangaListItemEntry)
+    suspend fun insertManga(manga: MangaListItemEntry)
 
     @Delete
-    fun deleteAllManga(manga: List<MangaListItemEntry>)
+    suspend fun deleteAllManga(manga: List<MangaListItemEntry>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllManga(manga: List<MangaListItemEntry>)
+    suspend fun insertAllManga(manga: List<MangaListItemEntry>)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateMangaIsFavorite(manga: MangaListItemEntry)

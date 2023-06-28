@@ -23,12 +23,9 @@ import com.djabaridev.anicatalog.presentation.features.splash.SplashScreen
 @ExperimentalMaterial3Api
 fun NavGraphBuilder.mainGraph(drawerState: DrawerState, navController: NavController) {
     navigation(
-        startDestination = AniCatalogNavOption.SPLASH_SCREEN.name,
+        startDestination = AniCatalogNavOption.HOME_SCREEN.name,
         route = AniCatalogNavRoute.MAIN.name
     ) {
-        composable(AniCatalogNavOption.SPLASH_SCREEN.name) {
-            SplashScreen(navController = navController)
-        }
         composable(AniCatalogNavOption.HOME_SCREEN.name) {
             HomeScreen(navController = navController, drawerState = drawerState)
         }

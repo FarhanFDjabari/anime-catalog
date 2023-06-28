@@ -17,8 +17,11 @@ import com.djabaridev.anicatalog.domain.mapper.toMangaListItemEntry
 import com.djabaridev.anicatalog.domain.repositories.AniCatalogRepository
 import com.djabaridev.anicatalog.utils.Resource
 import dagger.hilt.android.scopes.ActivityScoped
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.lastOrNull
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -54,40 +57,12 @@ class AniCatalogRepositoryImpl @Inject constructor(
                     )
                 )
             } else {
-                val offlineData = getAnimeListFromCache().lastOrNull()
-                if (offlineData?.isNotEmpty() == true) {
-                    Resource.Success(
-                        AniMangaResponseEntity(
-                            animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                            paging = body?.paging,
-                        )
-                    )
-                } else {
-                    Resource.Error(code = response.code(), message = response.message())
-                }
+                Resource.Error(code = response.code(), message = response.message())
             }
         } catch (e: HttpException) {
-            val offlineData = getAnimeListFromCache().lastOrNull()
-            if (offlineData?.isNotEmpty() == true) {
-                Resource.Success(
-                    AniMangaResponseEntity(
-                        animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                    )
-                )
-            } else {
-                Resource.Error(e.code(), e.message())
-            }
+            Resource.Error(e.code(), e.message())
         } catch (e: Exception) {
-            val offlineData = getAnimeListFromCache().lastOrNull()
-            if (offlineData?.isNotEmpty() == true) {
-                Resource.Success(
-                    AniMangaResponseEntity(
-                        animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                    )
-                )
-            } else {
-                Resource.Exception(e)
-            }
+            Resource.Exception(e)
         }
     }
 
@@ -108,40 +83,12 @@ class AniCatalogRepositoryImpl @Inject constructor(
                     )
                 )
             } else {
-                val offlineData = getMangaListFromCache().lastOrNull()
-                if (offlineData?.isNotEmpty() == true) {
-                    Resource.Success(
-                        AniMangaResponseEntity(
-                            animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                            paging = body?.paging,
-                        )
-                    )
-                } else {
-                    Resource.Error(code = response.code(), message = response.message())
-                }
+                Resource.Error(code = response.code(), message = response.message())
             }
         } catch (e: HttpException) {
-            val offlineData = getMangaListFromCache().lastOrNull()
-            if (offlineData?.isNotEmpty() == true) {
-                Resource.Success(
-                    AniMangaResponseEntity(
-                        animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                    )
-                )
-            } else {
-                Resource.Error(e.code(), e.message())
-            }
+            Resource.Error(e.code(), e.message())
         } catch (e: Exception) {
-            val offlineData = getMangaListFromCache().lastOrNull()
-            if (offlineData?.isNotEmpty() == true) {
-                Resource.Success(
-                    AniMangaResponseEntity(
-                        animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                    )
-                )
-            } else {
-                Resource.Exception(e)
-            }
+            Resource.Exception(e)
         }
     }
 
@@ -163,40 +110,12 @@ class AniCatalogRepositoryImpl @Inject constructor(
                     )
                 )
             } else {
-                val offlineData = getMangaListFromCache().lastOrNull()
-                if (offlineData?.isNotEmpty() == true) {
-                    Resource.Success(
-                        AniMangaResponseEntity(
-                            animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                            paging = body?.paging,
-                        )
-                    )
-                } else {
-                    Resource.Error(code = response.code(), message = response.message())
-                }
+                Resource.Error(code = response.code(), message = response.message())
             }
         } catch (e: HttpException) {
-            val offlineData = getMangaListFromCache().lastOrNull()
-            if (offlineData?.isNotEmpty() == true) {
-                Resource.Success(
-                    AniMangaResponseEntity(
-                        animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                    )
-                )
-            } else {
-                Resource.Error(e.code(), e.message())
-            }
+            Resource.Error(e.code(), e.message())
         } catch (e: Exception) {
-            val offlineData = getMangaListFromCache().lastOrNull()
-            if (offlineData?.isNotEmpty() == true) {
-                Resource.Success(
-                    AniMangaResponseEntity(
-                        animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                    )
-                )
-            } else {
-                Resource.Exception(e)
-            }
+            Resource.Exception(e)
         }
     }
 
@@ -217,40 +136,12 @@ class AniCatalogRepositoryImpl @Inject constructor(
                     )
                 )
             } else {
-                val offlineData = getAnimeListFromCache().lastOrNull()
-                if (offlineData?.isNotEmpty() == true) {
-                    Resource.Success(
-                        AniMangaResponseEntity(
-                            animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                            paging = body?.paging,
-                        )
-                    )
-                } else {
-                    Resource.Error(code = response.code(), message = response.message())
-                }
+                Resource.Error(code = response.code(), message = response.message())
             }
         } catch (e: HttpException) {
-            val offlineData = getAnimeListFromCache().lastOrNull()
-            if (offlineData?.isNotEmpty() == true) {
-                Resource.Success(
-                    AniMangaResponseEntity(
-                        animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                    )
-                )
-            } else {
-                Resource.Error(e.code(), e.message())
-            }
+            Resource.Error(e.code(), e.message())
         } catch (e: Exception) {
-            val offlineData = getAnimeListFromCache().lastOrNull()
-            if (offlineData?.isNotEmpty() == true) {
-                Resource.Success(
-                    AniMangaResponseEntity(
-                        animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                    )
-                )
-            } else {
-                Resource.Exception(e)
-            }
+            Resource.Exception(e)
         }
 
     }
@@ -342,49 +233,22 @@ class AniCatalogRepositoryImpl @Inject constructor(
             val response = api.getAnimeSeasonal(year, season, limit, offset, fields)
             val body = response.body()
             if (response.isSuccessful && body != null) {
-                if (offset == 0) animeDao.insertAllAnime(body.data.map{it.node.toAnimeListItemEntry()})
+                val entryItems = body.data.map{it.node.toAnimeListItemEntry()}
+                if (offset == 0) animeDao.insertAllAnime(entryItems)
                 Resource.Success(
                     AniMangaResponseEntity(
-                        animangas = body.data.map { it.node.toAniMangaListItemEntity() },
+                        animangas = entryItems.map { it.toAniMangaListItemEntity() },
                         paging = body.paging,
                         season = body.season
                     )
                 )
             } else {
-                val offlineData = getAnimeListFromCache().lastOrNull()
-                if (offlineData?.isNotEmpty() == true) {
-                    Resource.Success(
-                        AniMangaResponseEntity(
-                            animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                            paging = body?.paging,
-                        )
-                    )
-                } else {
-                    Resource.Error(code = response.code(), message = response.message())
-                }
+                Resource.Error(code = response.code(), message = response.message())
             }
         } catch (e: HttpException) {
-            val offlineData = getAnimeListFromCache().lastOrNull()
-            if (offlineData?.isNotEmpty() == true) {
-                Resource.Success(
-                    AniMangaResponseEntity(
-                        animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                    )
-                )
-            } else {
-                Resource.Error(code = e.code(), message = e.message())
-            }
+            Resource.Error(code = e.code(), message = e.message())
         } catch (e: Exception) {
-            val offlineData = getAnimeListFromCache().lastOrNull()
-            if (offlineData?.isNotEmpty() == true) {
-                Resource.Success(
-                    AniMangaResponseEntity(
-                        animangas = offlineData.map { it.toAniMangaListItemEntity() },
-                    )
-                )
-            } else {
-                Resource.Exception(e)
-            }
+            Resource.Exception(e)
         }
     }
 }

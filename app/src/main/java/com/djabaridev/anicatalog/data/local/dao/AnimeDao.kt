@@ -19,13 +19,13 @@ interface AnimeDao {
     fun getAnime(id: Int): Flow<AnimeListItemEntry?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAnime(anime: AnimeListItemEntry)
+    suspend fun insertAnime(anime: AnimeListItemEntry)
 
     @Delete
-    fun deleteAllAnime(anime: List<AnimeListItemEntry>)
+    suspend fun deleteAllAnime(anime: List<AnimeListItemEntry>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllAnime(anime: List<AnimeListItemEntry>)
+    suspend fun insertAllAnime(anime: List<AnimeListItemEntry>)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateAnimeIsFavorite(anime: AnimeListItemEntry)

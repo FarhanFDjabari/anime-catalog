@@ -18,15 +18,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.djabaridev.anicatalog.domain.entities.AniMangaListItemEntity
 import com.djabaridev.anicatalog.presentation.components.shimmerBrush
 import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
 
 @Composable
-fun MangaListItem(onItemClick: () -> Unit = {}) {
+fun MangaListItem(
+    data: AniMangaListItemEntity? = null,
+    isLoading: Boolean = false,
+    onItemClick: (AniMangaListItemEntity) -> Unit = {},
+) {
     Box {
         Row(
             modifier = Modifier
@@ -34,8 +41,10 @@ fun MangaListItem(onItemClick: () -> Unit = {}) {
                 .height(150.dp)
                 .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .clickable {
-                    onItemClick()
+                .clickable(enabled = !isLoading && data != null) {
+                    if (data != null) {
+                        onItemClick(data)
+                    }
                 },
             verticalAlignment = Alignment.Top
         ) {
@@ -44,12 +53,20 @@ fun MangaListItem(onItemClick: () -> Unit = {}) {
                     .width(120.dp)
                     .height(150.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(shimmerBrush(show = true))
-                    .clickable {
-                        onItemClick()
-                    }
-            )
-            if (true) {
+                    .background(shimmerBrush(show = isLoading))
+            ) {
+                if (!isLoading) {
+                    AsyncImage(
+                        model = data?.mediumPicture
+                            ?: "https://placehold.co/300x400?text=No\nImage",
+                        contentDescription = data?.title ?: "",
+                        contentScale = ContentScale.Crop,
+                        alignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+            if (isLoading) {
                 ShimmerDataLoading()
             } else {
                 Column(
@@ -58,30 +75,30 @@ fun MangaListItem(onItemClick: () -> Unit = {}) {
                         .padding(start = 16.dp),
                 ) {
                     Text(
-                        text = "Manga Title",
+                        text = data?.title ?: "-",
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
-                        text = "Alternative Title",
+                        text = data?.jpTitle ?: "-",
                         style = MaterialTheme.typography.bodySmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
-                        text = "Status",
+                        text = data?.status ?: "-",
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Text(
-                        text = "Synopsis",
+                        text = data?.synopsis ?: "-",
                         style = MaterialTheme.typography.bodySmall,
                         maxLines = 4,
                         overflow = TextOverflow.Ellipsis,
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = "Genre: Action, Romance, Comedy",
+                        text = "Genre: ${data?.genres?.joinToString(", ") ?: "-"}",
                         style = MaterialTheme.typography.bodySmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

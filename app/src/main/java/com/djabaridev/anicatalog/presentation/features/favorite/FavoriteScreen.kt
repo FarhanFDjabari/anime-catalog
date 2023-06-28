@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +24,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -47,15 +49,12 @@ import kotlinx.coroutines.launch
 fun FavoriteScreen(
     navController: NavController,
     drawerState: DrawerState,
+    viewModel : FavoriteViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val viewModel : FavoriteViewModel = hiltViewModel()
 
-    val favoriteAnime = viewModel.favoriteAnimeList.observeAsState()
-    val favoriteManga = viewModel.favoriteMangaList.observeAsState()
-
-    Log.d("Favorite ViewModel", "${favoriteAnime.value} ")
-    Log.d("Favorite ViewModel", "${favoriteManga.value} ")
+    val favoriteAnime by viewModel.favoriteAnimeList.observeAsState()
+    val favoriteManga by viewModel.favoriteMangaList.observeAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -63,24 +62,22 @@ fun FavoriteScreen(
             TopAppBar(
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 title = {
-                    Image(
-                        painter = painterResource(id = R.drawable.myanimelist_logo),
-                        contentDescription = "MyAnimeList Logo",
-                        alignment = Alignment.CenterStart,
-                        modifier = Modifier.size(150.dp)
+                    Text(
+                        text = "Favorite",
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            color = MaterialTheme.colorScheme.primary
+                        ),
                     )
                 },
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            coroutineScope.launch {
-                                drawerState.open()
-                            }
+                            navController.navigateUp()
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Menu,
-                            contentDescription = "Drawer Icon",
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "Back Icon",
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -95,8 +92,8 @@ fun FavoriteScreen(
             tabs = viewModel.tabs,
             draggableState = viewModel.dragState.value!!,
             onDragStop = { viewModel.updateTabIndexOnSwipe() },
-            animes = favoriteAnime.value,
-            mangas = favoriteManga.value,
+            animes = favoriteAnime,
+            mangas = favoriteManga,
             modifier = Modifier.padding(it)
         )
     }
