@@ -24,15 +24,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,11 +53,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.djabaridev.anicatalog.data.remote.responses.anime.AnimeDetailResponse
 import com.djabaridev.anicatalog.presentation.components.shimmerBrush
 import com.djabaridev.anicatalog.presentation.features.detail.components.ExpandableCard
 import com.djabaridev.anicatalog.presentation.features.detail.components.ExpandableText
 import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -57,12 +68,39 @@ fun AnimeDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: AnimeDetailViewModel = hiltViewModel(),
 ) {
+    var isLoading by remember { mutableStateOf(true) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEventFlow.collect {
+            when (it) {
+                is AnimeDetailViewModel.UIEvent.Loading -> {
+                    isLoading = true
+                }
+                is AnimeDetailViewModel.UIEvent.DataLoaded -> {
+                    isLoading = false
+                }
+                is AnimeDetailViewModel.UIEvent.ShowSnackbar -> {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = it.message,
+                            actionLabel = "OK",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     AnimeDetailScreenContent(
         navController = navController,
         backgroundColor = viewModel.backgroundColor.value,
         animeDetail = viewModel.animeDetail.value,
+        snackbarHostState = snackbarHostState,
         topBarTitle = viewModel.currentAnimeTitle?: "Anime Title",
         isFavorite = viewModel.isAnimeFavorite.value,
+        isLoading = isLoading,
         modifier = modifier,
     )
 }
@@ -73,12 +111,15 @@ fun AnimeDetailScreenContent(
     navController: NavController,
     backgroundColor: Color,
     animeDetail: AnimeDetailResponse? = null,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     topBarTitle: String,
     isFavorite: Boolean = false,
+    isLoading: Boolean = true,
     modifier: Modifier,
 ) {
     Scaffold(
         containerColor = Color.Transparent,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -107,16 +148,18 @@ fun AnimeDetailScreenContent(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                containerColor = MaterialTheme.colorScheme.primary,
-                onClick = { /*TODO*/ }
-            ) {
-                Icon(
-                    imageVector = if (isFavorite)
-                        Icons.Filled.BookmarkAdded
-                    else Icons.Outlined.BookmarkAdd,
-                    contentDescription = "Add To Favorite",
-                )
+            if (!isLoading) {
+                FloatingActionButton(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    onClick = { /*TODO*/ }
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite)
+                            Icons.Filled.BookmarkAdded
+                        else Icons.Outlined.BookmarkAdd,
+                        contentDescription = "Add To Favorite",
+                    )
+                }
             }
         },
         modifier = modifier
@@ -145,24 +188,55 @@ fun AnimeDetailScreenContent(
                         .height(220.dp)
                         .padding(16.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(shimmerBrush(show = true))
-                )
+                        .background(shimmerBrush(show = isLoading))
+                ) {
+                    if (animeDetail != null) {
+                        AsyncImage(
+                            model = animeDetail.main_picture.large,
+                            contentDescription = animeDetail.title,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
+                    }
+                }
             }
             // anime title
             item {
-                Text(
-                    text = "Anime Title",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier
-                )
+                if (isLoading) {
+                    Box(
+                        modifier = Modifier
+                            .width(160.dp)
+                            .height(25.dp)
+                            .background(shimmerBrush(show = true))
+                    )
+                } else {
+                    Text(
+                        text = animeDetail?.title ?: "",
+                        style = MaterialTheme.typography.headlineLarge,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                    )
+                }
             }
             // anime alternative title
             item {
-                Text(
-                    text = "Alternative Title",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                )
+                if (isLoading) {
+                    Box(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(20.dp)
+                            .padding(top = 5.dp)
+                            .background(shimmerBrush(show = true))
+                    )
+                } else {
+                    Text(
+                        text = animeDetail?.alternative_titles?.ja ?: "",
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                    )
+                }
             }
             // anime rating bar
             item {
@@ -179,24 +253,43 @@ fun AnimeDetailScreenContent(
                             .size(32.dp)
                             .padding(end = 5.dp)
                     )
-                    Text(
-                        text = "9.99",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    if (isLoading) {
+                        Box(
+                            modifier = Modifier
+                                .width(50.dp)
+                                .height(35.dp)
+                                .background(shimmerBrush(show = true))
+                        )
+                    } else {
+                        Text(
+                            text = "${animeDetail?.mean ?: 0.0}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
             }
             // genre
             item {
-                Text(
-                    text = "Action, Romance, Comedy, Drama, Slice of Life, School",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontStyle = FontStyle.Italic,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = 8.dp, end = 64.dp, start = 64.dp)
-                )
+                if (isLoading) {
+                    Box(
+                        modifier = Modifier
+                            .width(250.dp)
+                            .height(20.dp)
+                            .padding(top = 5.dp)
+                            .background(shimmerBrush(show = true))
+                    )
+                } else {
+                    Text(
+                        text = animeDetail?.genres?.joinToString(", ") { genre -> genre.name } ?: "",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontStyle = FontStyle.Italic,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(top = 8.dp, end = 64.dp, start = 64.dp)
+                    )
+                }
             }
 
             // synopsis header
@@ -211,29 +304,39 @@ fun AnimeDetailScreenContent(
             }
             // synopsis
             item {
-                ExpandableText(
-                    text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget ultricies ultrices, nisl nisl aliquam nisl, vitae aliquam nisl nisl vitae nisl. Donec euismod, nisl eget ultricies ultrices, nisl nisl aliquam nisl, vitae aliquam nisl nisl vitae nisl. Donec euismod, nisl eget ultricies ultrices, nisl nisl aliquam nisl, vitae aliquam nisl nisl vitae nisl. Donec euismod, nisl eget ultricies ultrices, nisl nisl aliquam nisl, vitae aliquam nisl nisl vitae nisl. Donec euismod, nisl eget ultricies ultrices, nisl nisl aliquam nisl, vitae aliquam nisl nisl vitae nisl. Donec euismod, nisl eget ultricies ultrices, nisl nisl aliquam nisl, vitae aliquam nisl nisl vitae nisl. Donec euismod, nisl eget ultricies ultrices, nisl nisl aliquam nisl, vitae aliquam nisl nisl vitae nisl. ",
-                    style = MaterialTheme.typography.bodyMedium,
-                    showLessStyle = SpanStyle(
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.W600,
-                    ),
-                    showMoreStyle = SpanStyle(
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.W600,
-                    ),
-                    textAlign = TextAlign.Justify,
-                    collapsedMaxLine = 10,
-                    modifier = Modifier
-                        .padding(top = 8.dp, end = 16.dp, start = 16.dp)
-                )
+                if (isLoading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .padding(top = 5.dp, end = 16.dp, start = 16.dp)
+                            .background(shimmerBrush(show = true))
+                    )
+                } else {
+                    ExpandableText(
+                        text = animeDetail?.synopsis ?: "",
+                        style = MaterialTheme.typography.bodyMedium,
+                        showLessStyle = SpanStyle(
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.W600,
+                        ),
+                        showMoreStyle = SpanStyle(
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.W600,
+                        ),
+                        textAlign = TextAlign.Justify,
+                        collapsedMaxLine = 10,
+                        modifier = Modifier
+                            .padding(top = 8.dp, end = 16.dp, start = 16.dp)
+                    )
+                }
             }
             // anime cast
             item {
                 ExpandableCard(
                     title = {
                         Text(
-                            text = "Cast",
+                            text = "Related Anime",
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
@@ -251,14 +354,22 @@ fun AnimeDetailScreenContent(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        items(10) {
+                        items(animeDetail?.related_anime?.size ?: 0) {
                             Box(
                                 modifier = Modifier
                                     .width(100.dp)
-                                    .height(100.dp)
+                                    .height(130.dp)
                                     .clip(RoundedCornerShape(10.dp))
-                                    .background(shimmerBrush(show = true))
-                            )
+                                    .background(shimmerBrush(show = isLoading))
+                            ) {
+                                AsyncImage(
+                                    model = animeDetail?.related_anime?.get(it)?.node?.main_picture?.medium,
+                                    contentDescription = animeDetail?.related_anime?.get(it)?.node?.title,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                )
+                            }
                         }
                     }
                 }

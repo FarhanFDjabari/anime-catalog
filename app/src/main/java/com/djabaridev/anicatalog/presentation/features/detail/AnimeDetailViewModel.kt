@@ -50,7 +50,7 @@ class AnimeDetailViewModel @Inject constructor(
         savedStateHandle.get<Int>("animeId")?.let { animeId ->
             if (animeId != -1) {
                 currentAnimeId = animeId
-//                onEvent(AnimeDetailEvent.GetAnimeDetail(animeId))
+                onEvent(AnimeDetailEvent.GetAnimeDetail(animeId))
             }
         }
     }
@@ -71,7 +71,10 @@ class AnimeDetailViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _animeDetail.value?.toAnimeListItemEntry()?.toAniMangaListItemEntity()
-                    ?.let { repository.updateAnimeIsFavorite(!_isAnimeFavorite.value, it) }
+                    ?.let {
+                        repository.updateAnimeIsFavorite(!_isAnimeFavorite.value, it)
+                        _isAnimeFavorite.value = !_isAnimeFavorite.value
+                    }
             } catch (e: Exception) {
                 _uiEventFlow.emit(UIEvent.ShowSnackbar("An error occurred adding to favorite"))
             }
@@ -81,12 +84,17 @@ class AnimeDetailViewModel @Inject constructor(
     private fun getAnimeDetail(animeId: Int) {
         viewModelScope.launch {
             _uiEventFlow.emit(UIEvent.Loading)
-            val response = repository.getAnimeDetail(animeId)
-            if (response is Resource.Success) {
-                _animeDetail.value = response.data
-                _uiEventFlow.emit(UIEvent.DataLoaded)
-            } else {
-                _uiEventFlow.emit(UIEvent.ShowSnackbar("Error getting anime detail"))
+            when (val response = repository.getAnimeDetail(animeId)) {
+                is Resource.Success -> {
+                    _animeDetail.value = response.data
+                    _uiEventFlow.emit(UIEvent.DataLoaded)
+                }
+                is Resource.Error -> {
+                    _uiEventFlow.emit(UIEvent.ShowSnackbar("Error ${response.code}: ${response.message}"))
+                }
+                else -> {
+                    _uiEventFlow.emit(UIEvent.ShowSnackbar("An error occurred getting anime detail"))
+                }
             }
         }
     }

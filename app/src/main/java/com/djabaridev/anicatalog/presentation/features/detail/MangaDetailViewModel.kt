@@ -50,7 +50,7 @@ class MangaDetailViewModel @Inject constructor(
         savedStateHandle.get<Int>("mangaId")?.let { mangaId ->
             if (mangaId != -1) {
                 currentMangaId = mangaId
-//                onEvent(MangaDetailEvent.GetMangaDetail(mangaId))
+                onEvent(MangaDetailEvent.GetMangaDetail(mangaId))
             }
         }
     }
@@ -71,7 +71,10 @@ class MangaDetailViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _mangaDetail.value?.toAnimeListItemEntry()?.toAniMangaListItemEntity()
-                    ?.let { repository.updateMangaIsFavorite(!_isMangaFavorite.value, it) }
+                    ?.let {
+                        repository.updateMangaIsFavorite(!_isMangaFavorite.value, it)
+                        _isMangaFavorite.value = !_isMangaFavorite.value
+                    }
             } catch (e: Exception) {
                 _uiEventFlow.emit(UIEvent.ShowSnackbar("An error occurred adding to favorite"))
             }
@@ -81,12 +84,17 @@ class MangaDetailViewModel @Inject constructor(
     private fun getMangaDetail(mangaId: Int) {
         viewModelScope.launch {
             _uiEventFlow.emit(UIEvent.Loading)
-            val response = repository.getMangaDetail(mangaId)
-            if (response is Resource.Success) {
-                _mangaDetail.value = response.data
-                _uiEventFlow.emit(UIEvent.DataLoaded)
-            } else {
-                _uiEventFlow.emit(UIEvent.ShowSnackbar("Error getting anime detail"))
+            when (val response = repository.getMangaDetail(mangaId)) {
+                is Resource.Success -> {
+                    _mangaDetail.value = response.data
+                    _uiEventFlow.emit(UIEvent.DataLoaded)
+                }
+                is Resource.Error -> {
+                    _uiEventFlow.emit(UIEvent.ShowSnackbar("Error ${response.code}: ${response.message}"))
+                }
+                else -> {
+                    _uiEventFlow.emit(UIEvent.ShowSnackbar("An unexpected error occurred"))
+                }
             }
         }
     }
