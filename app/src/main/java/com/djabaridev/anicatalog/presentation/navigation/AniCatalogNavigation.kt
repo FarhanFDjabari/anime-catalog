@@ -20,6 +20,7 @@ fun AniCatalogNavigation(
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = false,
         drawerContent = {
             AniCatalogDrawerContent(
                 drawerState = drawerState,

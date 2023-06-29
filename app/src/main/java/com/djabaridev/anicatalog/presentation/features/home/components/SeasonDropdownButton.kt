@@ -28,7 +28,7 @@ fun SeasonDropdownButton(
     value: String,
     onDropdownItemClick: (String) -> Unit = {},
 ) {
-    val seasons = arrayOf("spring", "summer", "fall", "winter")
+    val seasons = arrayOf("summer", "spring", "fall", "winter")
     var isSeasonExpanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(

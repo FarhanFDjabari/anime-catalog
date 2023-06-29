@@ -40,7 +40,7 @@ fun AnimeSeasonalListHeader(
     onFilterChange: (String, Int) -> Unit = { _, _ -> },
     onSeeAll: () -> Unit = {},
 ) {
-    var selectedSeason by remember { mutableStateOf("spring") }
+    var selectedSeason by remember { mutableStateOf("summer") }
     var selectedYear by remember { mutableStateOf("2023") }
 
     Column(

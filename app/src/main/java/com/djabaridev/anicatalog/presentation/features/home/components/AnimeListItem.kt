@@ -94,7 +94,7 @@ fun AnimeListItem(
                     Text(
                         text = data?.synopsis ?: "-",
                         style = MaterialTheme.typography.bodySmall,
-                        maxLines = 4,
+                        maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
                     )
                     Spacer(modifier = Modifier.weight(1f))
