@@ -101,6 +101,7 @@ fun AnimeDetailScreen(
         topBarTitle = viewModel.currentAnimeTitle?: "Anime Title",
         isFavorite = viewModel.isAnimeFavorite.value,
         isLoading = isLoading,
+        onFavoriteChange = { viewModel.onEvent(AnimeDetailEvent.AddToFavorite) },
         modifier = modifier,
     )
 }
@@ -115,6 +116,7 @@ fun AnimeDetailScreenContent(
     topBarTitle: String,
     isFavorite: Boolean = false,
     isLoading: Boolean = true,
+    onFavoriteChange: (Boolean) -> Unit = {},
     modifier: Modifier,
 ) {
     Scaffold(
@@ -151,7 +153,9 @@ fun AnimeDetailScreenContent(
             if (!isLoading) {
                 FloatingActionButton(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        onFavoriteChange(!isFavorite)
+                    }
                 ) {
                     Icon(
                         imageVector = if (isFavorite)

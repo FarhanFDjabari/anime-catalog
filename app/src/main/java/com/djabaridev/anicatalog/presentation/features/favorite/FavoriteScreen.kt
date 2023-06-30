@@ -1,16 +1,12 @@
 package com.djabaridev.anicatalog.presentation.features.favorite
 
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,21 +24,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.djabaridev.anicatalog.R
 import com.djabaridev.anicatalog.domain.entities.AniMangaListItemEntity
 import com.djabaridev.anicatalog.presentation.features.favorite.anime.AnimeFavoriteTab
 import com.djabaridev.anicatalog.presentation.features.favorite.manga.MangaFavoriteTab
 import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +41,6 @@ fun FavoriteScreen(
     drawerState: DrawerState,
     viewModel : FavoriteViewModel = hiltViewModel()
 ) {
-    val coroutineScope = rememberCoroutineScope()
 
     val favoriteAnime by viewModel.favoriteAnimeList.observeAsState()
     val favoriteManga by viewModel.favoriteMangaList.observeAsState()

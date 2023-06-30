@@ -17,12 +17,8 @@ import com.djabaridev.anicatalog.domain.mapper.toMangaListItemEntry
 import com.djabaridev.anicatalog.domain.repositories.AniCatalogRepository
 import com.djabaridev.anicatalog.utils.Resource
 import dagger.hilt.android.scopes.ActivityScoped
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.lastOrNull
 import retrofit2.HttpException
 import javax.inject.Inject
 

@@ -40,7 +40,6 @@ class HomeViewModel @Inject constructor(
     private var getMangaRankJob: Job? = null
 
     init {
-        Log.d("Home ViewModel", "homevm: init")
         reload()
     }
 

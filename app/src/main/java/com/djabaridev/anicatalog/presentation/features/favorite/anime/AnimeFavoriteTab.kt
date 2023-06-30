@@ -42,12 +42,13 @@ fun AnimeFavoriteTab(
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            items(animes.size) {
+            items(animes.size) {idx ->
                 AnimeListItem(
-                    isLoading = true,
+                    data = animes[idx],
+                    isLoading = false,
                     onItemClick = {
                         navController.navigate(
-                            "${AniCatalogNavOption.ANIME_DETAIL_SCREEN.name}/Anime Title/0"
+                            "${AniCatalogNavOption.ANIME_DETAIL_SCREEN.name}/${animes[idx].title}/${animes[idx].id}"
                         )
                     }
                 )

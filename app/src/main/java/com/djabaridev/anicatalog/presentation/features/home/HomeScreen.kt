@@ -157,7 +157,6 @@ fun HomeScreenContent(
             .fillMaxSize()
             .padding(padding)
     ) {
-        // TODO: Anime Ranking Horizontal List
         item {
             AnimeRankingListHeader(
                 modifier = modifier,
@@ -176,7 +175,6 @@ fun HomeScreenContent(
                 }
             )
         }
-        // TODO: Anime Seasonal Vertical List
         item {
             AnimeSeasonalListHeader(
                 modifier = modifier,
@@ -200,7 +198,6 @@ fun HomeScreenContent(
                 AnimeListItem(isLoading = true)
             }
         }
-        // TODO: Manga Ranking Vertical List
         item {
             MangaRankingListHeader(
                 onFilterChange = onMangaRankFilterSelected

@@ -22,7 +22,7 @@ fun Node.toAnimeListItemEntry() : AnimeListItemEntry {
         numEpisodes = this.num_episodes?: 0,
         status = this.status?: "-",
         synopsis = this.synopsis?:"-",
-        isFavorite = true
+        isFavorite = false
     )
 }
 
@@ -60,7 +60,7 @@ fun Node.toMangaListItemEntry() : MangaListItemEntry {
         status = this.status?: "-",
         synopsis = this.synopsis?:"-",
         authors = "${this.authors?.first()?.node?.first_name} ${this.authors?.first()?.node?.last_name}",
-        isFavorite = true
+        isFavorite = false
     )
 }
 
@@ -172,11 +172,11 @@ fun AnimeDetailResponse.toAnimeListItemEntry() : AnimeListItemEntry {
         numEpisodes = this.num_episodes,
         status = this.status,
         synopsis = this.synopsis,
-        isFavorite = true
+        isFavorite = false
     )
 }
 
-fun MangaDetailResponse.toAnimeListItemEntry() : MangaListItemEntry {
+fun MangaDetailResponse.toMangaListItemEntry() : MangaListItemEntry {
     return MangaListItemEntry(
         id = this.id,
         title = this.title,
@@ -190,7 +190,7 @@ fun MangaDetailResponse.toAnimeListItemEntry() : MangaListItemEntry {
         status = this.status,
         authors = "${this.authors.first().node.first_name} ${this.authors.first().node.last_name}",
         synopsis = this.synopsis,
-        isFavorite = true
+        isFavorite = false
     )
 }
 

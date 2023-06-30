@@ -1,5 +1,6 @@
 package com.djabaridev.anicatalog.presentation.features.detail
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -15,6 +16,7 @@ import com.djabaridev.anicatalog.presentation.theme.BlueGray500
 import com.djabaridev.anicatalog.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flowOn
@@ -61,14 +63,18 @@ class AnimeDetailViewModel @Inject constructor(
                 updateAnimeIsFavorite()
             }
             is AnimeDetailEvent.GetAnimeDetail -> {
-                getAnimeDetail(event.animeId)
-                isAnimeFavorite()
+                viewModelScope.launch {
+                    coroutineScope {
+                        launch { getAnimeDetail(event.animeId) }
+                        launch { isAnimeFavorite() }
+                    }
+                }
             }
         }
     }
 
     private fun updateAnimeIsFavorite() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 _animeDetail.value?.toAnimeListItemEntry()?.toAniMangaListItemEntity()
                     ?.let {
@@ -77,36 +83,34 @@ class AnimeDetailViewModel @Inject constructor(
                     }
             } catch (e: Exception) {
                 _uiEventFlow.emit(UIEvent.ShowSnackbar("An error occurred adding to favorite"))
+                Log.e("AnimeDetailViewModel", "updateAnimeIsFavorite: ${e.message}")
             }
         }
     }
 
-    private fun getAnimeDetail(animeId: Int) {
-        viewModelScope.launch {
-            _uiEventFlow.emit(UIEvent.Loading)
-            when (val response = repository.getAnimeDetail(animeId)) {
-                is Resource.Success -> {
-                    _animeDetail.value = response.data
-                    _uiEventFlow.emit(UIEvent.DataLoaded)
-                }
-                is Resource.Error -> {
-                    _uiEventFlow.emit(UIEvent.ShowSnackbar("Error ${response.code}: ${response.message}"))
-                }
-                else -> {
-                    _uiEventFlow.emit(UIEvent.ShowSnackbar("An error occurred getting anime detail"))
-                }
+    private suspend fun getAnimeDetail(animeId: Int) {
+        _uiEventFlow.emit(UIEvent.Loading)
+        when (val response = repository.getAnimeDetail(animeId)) {
+            is Resource.Success -> {
+                _animeDetail.value = response.data
+                _uiEventFlow.emit(UIEvent.DataLoaded)
+            }
+            is Resource.Error -> {
+                _uiEventFlow.emit(UIEvent.ShowSnackbar("Error ${response.code}: ${response.message}"))
+            }
+            else -> {
+                _uiEventFlow.emit(UIEvent.ShowSnackbar("An error occurred getting anime detail"))
             }
         }
     }
 
-    private fun isAnimeFavorite() {
-        viewModelScope.launch {
-            try {
-                val cache = currentAnimeId?.let { repository.getAnimeFromCache(it).flowOn(Dispatchers.IO).asLiveData() }
-                _isAnimeFavorite.value =  cache?.value?.isFavorite ?: false
-            } catch (e: Exception) {
-                _uiEventFlow.emit(UIEvent.ShowSnackbar("An error occurred getting anime favorite"))
-            }
+    private suspend fun isAnimeFavorite() {
+        try {
+            currentAnimeId?.let { repository.getAnimeFromCache(it).flowOn(Dispatchers.IO).collect{ item ->
+                _isAnimeFavorite.value =  item?.isFavorite ?: false
+            }}
+        } catch (e: Exception) {
+            _uiEventFlow.emit(UIEvent.ShowSnackbar("An error occurred getting anime favorite"))
         }
     }
 

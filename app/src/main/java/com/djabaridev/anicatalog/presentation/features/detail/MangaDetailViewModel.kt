@@ -9,7 +9,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.djabaridev.anicatalog.data.remote.responses.manga.MangaDetailResponse
 import com.djabaridev.anicatalog.domain.mapper.toAniMangaListItemEntity
-import com.djabaridev.anicatalog.domain.mapper.toAnimeListItemEntry
+import com.djabaridev.anicatalog.domain.mapper.toMangaListItemEntry
 import com.djabaridev.anicatalog.domain.repositories.AniCatalogRepository
 import com.djabaridev.anicatalog.presentation.theme.BlueGray500
 import com.djabaridev.anicatalog.utils.Resource
@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -68,9 +69,9 @@ class MangaDetailViewModel @Inject constructor(
     }
 
     private fun updateMangaIsFavorite() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                _mangaDetail.value?.toAnimeListItemEntry()?.toAniMangaListItemEntity()
+                _mangaDetail.value?.toMangaListItemEntry()?.toAniMangaListItemEntity()
                     ?.let {
                         repository.updateMangaIsFavorite(!_isMangaFavorite.value, it)
                         _isMangaFavorite.value = !_isMangaFavorite.value
@@ -102,8 +103,9 @@ class MangaDetailViewModel @Inject constructor(
     private fun isMangaFavorite() {
         viewModelScope.launch {
             try {
-                val cache = currentMangaId?.let { repository.getMangaFromCache(it).flowOn(Dispatchers.IO).asLiveData()}
-                _isMangaFavorite.value =  cache?.value?.isFavorite ?: false
+                currentMangaId?.let { repository.getMangaFromCache(it).flowOn(Dispatchers.IO).collect {item ->
+                    _isMangaFavorite.value =  item?.isFavorite ?: false
+                }}
             } catch (e: Exception) {
                 _uiEventFlow.emit(UIEvent.ShowSnackbar("An error occurred getting anime favorite"))
             }

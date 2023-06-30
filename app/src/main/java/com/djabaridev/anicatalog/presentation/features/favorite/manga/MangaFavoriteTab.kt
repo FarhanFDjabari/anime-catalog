@@ -42,12 +42,13 @@ fun MangaFavoriteTab(
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            items(mangas.size) {
+            items(mangas.size) {idx ->
                 MangaListItem(
-                    isLoading = true,
+                    data = mangas[idx],
+                    isLoading = false,
                     onItemClick = {
                         navController.navigate(
-                            "${AniCatalogNavOption.MANGA_DETAIL_SCREEN.name}/Manga Title/0"
+                            "${AniCatalogNavOption.MANGA_DETAIL_SCREEN.name}/${mangas[idx].title}/${mangas[idx].id}"
                         )
                     }
                 )

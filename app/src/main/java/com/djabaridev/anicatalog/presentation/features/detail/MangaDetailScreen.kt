@@ -100,6 +100,9 @@ fun MangaDetailScreen(
         isFavorite = viewModel.isMangaFavorite.value,
         isLoading = isLoading,
         snackbarHostState = snackbarHostState,
+        onFavoriteChange = {
+            viewModel.onEvent(MangaDetailEvent.AddToFavorite)
+        },
         modifier = modifier,
     )
 }
@@ -114,6 +117,7 @@ fun MangaDetailScreenContent(
     topBarTitle: String,
     isFavorite: Boolean = false,
     isLoading: Boolean = true,
+    onFavoriteChange: (Boolean) -> Unit = {},
     modifier: Modifier,
 ) {
     Scaffold(
@@ -150,7 +154,9 @@ fun MangaDetailScreenContent(
             if (!isLoading) {
                 FloatingActionButton(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        onFavoriteChange(!isFavorite)
+                    }
                 ) {
                     Icon(
                         imageVector = if (isFavorite)
