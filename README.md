@@ -8,7 +8,7 @@ This is a catalog of anime and manga. It is a android application that provides 
 * View anime recommendations
 
 ## Screenshots
-![Screenshot](previews/home.png)
+![Screenshot](previews/home.png =216x432)
 
 ## Installation
 Clone this repository and import into **Android Studio**
