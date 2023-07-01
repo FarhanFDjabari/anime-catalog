@@ -178,7 +178,10 @@ fun HomeScreenContent(
         item {
             AnimeSeasonalListHeader(
                 modifier = modifier,
-                onFilterChange = onAnimeSeasonChanged
+                onFilterChange = onAnimeSeasonChanged,
+                onSeeAll = {season, year ->
+                    navController.navigate(AniCatalogNavOption.ANIME_SEE_ALL_SCREEN.name + "/${year.toInt()}/$season")
+                }
             )
         }
         if (animeSeasonalListState == ListState.IDLE) {
@@ -200,7 +203,10 @@ fun HomeScreenContent(
         }
         item {
             MangaRankingListHeader(
-                onFilterChange = onMangaRankFilterSelected
+                onFilterChange = onMangaRankFilterSelected,
+                onSeeAll = {sortBy ->
+                    navController.navigate(AniCatalogNavOption.MANGA_SEE_ALL_SCREEN.name + "/$sortBy")
+                }
             )
         }
         if (mangaRankListState == ListState.IDLE) {

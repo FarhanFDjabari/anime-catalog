@@ -31,7 +31,7 @@ import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
 @Composable
 fun MangaRankingListHeader(
     onFilterChange: (MangaRankingEnum) -> Unit = {},
-    onSeeAll: () -> Unit = {},
+    onSeeAll: (String) -> Unit = {},
 ) {
     var isMangaRankingTypeExpanded by remember { mutableStateOf(false) }
     var currentFilter by remember { mutableStateOf(MangaRankingEnum.bypopularity) }
@@ -100,7 +100,7 @@ fun MangaRankingListHeader(
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onBackground,
                     ),
-                    onClick = {onSeeAll()}
+                    onClick = {onSeeAll(currentFilter.name)}
                 )
             }
         }

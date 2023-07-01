@@ -1,5 +1,6 @@
 package com.djabaridev.anicatalog.presentation
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,8 +24,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            installSplashScreen()
+        }
         super.onCreate(savedInstanceState)
-        installSplashScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             AniCatalogThemeWrapper{

@@ -38,7 +38,7 @@ import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
 fun AnimeSeasonalListHeader(
     modifier: Modifier = Modifier,
     onFilterChange: (String, Int) -> Unit = { _, _ -> },
-    onSeeAll: () -> Unit = {},
+    onSeeAll: (String, String) -> Unit = {_, _ -> },
 ) {
     var selectedSeason by remember { mutableStateOf("summer") }
     var selectedYear by remember { mutableStateOf("2023") }
@@ -63,7 +63,7 @@ fun AnimeSeasonalListHeader(
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onBackground,
                 ),
-                onClick = {onSeeAll()}
+                onClick = {onSeeAll(selectedSeason, selectedYear)}
             )
         }
         Row (

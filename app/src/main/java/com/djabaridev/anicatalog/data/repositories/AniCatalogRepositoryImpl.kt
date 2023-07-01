@@ -1,10 +1,15 @@
 package com.djabaridev.anicatalog.data.repositories
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.djabaridev.anicatalog.data.local.dao.AnimeDao
 import com.djabaridev.anicatalog.data.local.dao.MangaDao
 import com.djabaridev.anicatalog.data.local.models.AnimeListItemEntry
 import com.djabaridev.anicatalog.data.local.models.MangaListItemEntry
 import com.djabaridev.anicatalog.data.remote.MyAnimeListAPI
+import com.djabaridev.anicatalog.data.remote.paging.AnimePagingSource
+import com.djabaridev.anicatalog.data.remote.paging.MangaPagingSource
 import com.djabaridev.anicatalog.data.remote.responses.anime.AnimeDetailResponse
 import com.djabaridev.anicatalog.data.remote.responses.anime.AnimeRankingEnum
 import com.djabaridev.anicatalog.data.remote.responses.manga.MangaDetailResponse
@@ -247,4 +252,34 @@ class AniCatalogRepositoryImpl @Inject constructor(
             Resource.Exception(e)
         }
     }
+
+    override fun getAnimeSeasonalPagination(
+        season: String,
+        year: Int
+    ): Flow<PagingData<AniMangaListItemEntity>> = Pager(
+        config = PagingConfig(
+            pageSize = 10,
+        ),
+        pagingSourceFactory = {
+            AnimePagingSource(
+                myAnimeListAPI = api,
+                season = season,
+                year = year,
+            )
+        }
+    ).flow
+
+    override fun getMangaRankPagination(
+        sortBy: String
+    ): Flow<PagingData<AniMangaListItemEntity>> = Pager(
+        config = PagingConfig(
+            pageSize = 10,
+        ),
+        pagingSourceFactory = {
+            MangaPagingSource(
+                myAnimeListAPI = api,
+                rankingType = sortBy,
+            )
+        }
+    ).flow
 }

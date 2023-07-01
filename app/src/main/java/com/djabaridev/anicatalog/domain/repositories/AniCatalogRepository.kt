@@ -1,5 +1,6 @@
 package com.djabaridev.anicatalog.domain.repositories
 
+import androidx.paging.PagingData
 import com.djabaridev.anicatalog.data.local.models.AnimeListItemEntry
 import com.djabaridev.anicatalog.data.local.models.MangaListItemEntry
 import com.djabaridev.anicatalog.data.remote.responses.anime.AnimeDetailResponse
@@ -27,4 +28,6 @@ interface AniCatalogRepository {
     fun getFavoriteAnimeList(): Flow<List<AnimeListItemEntry>>
     fun getFavoriteMangaList(): Flow<List<MangaListItemEntry>>
     suspend fun getAnimeSeasonal(year: Int, season: String, limit: Int, offset: Int): Resource<AniMangaResponseEntity>
+    fun getAnimeSeasonalPagination(season: String, year: Int): Flow<PagingData<AniMangaListItemEntity>>
+    fun getMangaRankPagination(sortBy: String): Flow<PagingData<AniMangaListItemEntity>>
 }
