@@ -1,6 +1,8 @@
 package com.djabaridev.anicatalog.presentation.features.home
 
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -31,6 +33,15 @@ class HomeViewModel @Inject constructor(
     val mangaRankList = mutableStateListOf<AniMangaListItemEntity>()
     val animeRankingList = mutableStateListOf<AniMangaListItemEntity>()
 
+    private val _animeRankFilter = mutableStateOf(AnimeRankingEnum.BYPOPULARITY)
+    val animeRankFilter: State<AnimeRankingEnum> = _animeRankFilter
+    private val _mangaRankFilter = mutableStateOf(MangaRankingEnum.bypopularity)
+    val mangaRankFilter: State<MangaRankingEnum> = _mangaRankFilter
+    private val _animeSelectedSeason = mutableStateOf("summer")
+    val animeSelectedSeason: State<String> = _animeSelectedSeason
+    private val _animeSelectedYear = mutableIntStateOf(2023)
+    val animeSelectedYear: State<Int> = _animeSelectedYear
+
     val seasonalAnimeListState = mutableStateOf(ListState.IDLE)
     val animeRankListState = mutableStateOf(ListState.IDLE)
     val mangaRankListState = mutableStateOf(ListState.IDLE)
@@ -54,6 +65,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getAnimeSeasonal(season: String = "summer", year: Int = 2023) {
+        _animeSelectedSeason.value = season
+        _animeSelectedYear.intValue = year
         getAnimeSeasonJob?.cancel()
         getAnimeSeasonJob = viewModelScope.launch {
             delay(750L)
@@ -89,6 +102,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getMangaRanking(sortBy: MangaRankingEnum) {
+        _mangaRankFilter.value = sortBy
         getMangaRankJob?.cancel()
         getMangaRankJob = viewModelScope.launch {
             delay(800L)
@@ -125,6 +139,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getAnimeRanking(sortBy: AnimeRankingEnum) {
+        _animeRankFilter.value = sortBy
         getAnimeRankJob?.cancel()
         getAnimeRankJob = viewModelScope.launch {
             delay(800L)

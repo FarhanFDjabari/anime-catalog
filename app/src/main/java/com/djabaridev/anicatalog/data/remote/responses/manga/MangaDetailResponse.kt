@@ -12,7 +12,7 @@ data class MangaDetailResponse(
     val created_at: String,
     val genres: List<Genre>,
     val id: Int,
-    val main_picture: MainPicture,
+    val main_picture: MainPicture?,
     val mean: Double,
     val media_type: String,
     val my_list_status: MyListStatus,

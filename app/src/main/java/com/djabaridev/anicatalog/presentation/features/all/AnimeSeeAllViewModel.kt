@@ -11,7 +11,6 @@ import com.djabaridev.anicatalog.domain.entities.AniMangaListItemEntity
 import com.djabaridev.anicatalog.domain.repositories.AniCatalogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.cancellable
 import javax.inject.Inject
 
 @HiltViewModel

@@ -68,6 +68,10 @@ fun HomeScreen(
             animeRankListState = viewModel.animeRankListState.value,
             animeSeasonalListState = viewModel.seasonalAnimeListState.value,
             mangaRankListState = viewModel.mangaRankListState.value,
+            animeRankFilter = viewModel.animeRankFilter.value,
+            animeSelectedSeason = viewModel.animeSelectedSeason.value,
+            animeSelectedYear = viewModel.animeSelectedYear.value,
+            mangaRankFilter = viewModel.mangaRankFilter.value,
             onAnimeRankFilterSelected = { sortBy ->
                 viewModel.getAnimeRanking(sortBy)
             },
@@ -145,9 +149,13 @@ fun HomeScreenContent(
     animeRankingList: List<AniMangaListItemEntity> = emptyList(),
     animeSeasonalList: List<AniMangaListItemEntity> = emptyList(),
     mangaRankingList: List<AniMangaListItemEntity> = emptyList(),
+    animeRankFilter: AnimeRankingEnum = AnimeRankingEnum.BYPOPULARITY,
+    animeSelectedSeason: String = "summer",
+    animeSelectedYear: Int = 2023,
     animeRankListState: ListState = ListState.LOADING,
     animeSeasonalListState: ListState = ListState.LOADING,
     mangaRankListState: ListState = ListState.LOADING,
+    mangaRankFilter: MangaRankingEnum = MangaRankingEnum.bypopularity,
     onAnimeRankFilterSelected: (AnimeRankingEnum) -> Unit = {},
     onMangaRankFilterSelected: (MangaRankingEnum) -> Unit = {},
     onAnimeSeasonChanged: (String, Int) -> Unit = { _, _ -> },
@@ -160,6 +168,7 @@ fun HomeScreenContent(
         item {
             AnimeRankingListHeader(
                 modifier = modifier,
+                currentFilter = animeRankFilter,
                 onFilterChange = onAnimeRankFilterSelected
             )
         }
@@ -179,6 +188,8 @@ fun HomeScreenContent(
             AnimeSeasonalListHeader(
                 modifier = modifier,
                 onFilterChange = onAnimeSeasonChanged,
+                selectedSeason = animeSelectedSeason,
+                selectedYear = animeSelectedYear.toString(),
                 onSeeAll = {season, year ->
                     navController.navigate(AniCatalogNavOption.ANIME_SEE_ALL_SCREEN.name + "/${year.toInt()}/$season")
                 }
@@ -204,6 +215,7 @@ fun HomeScreenContent(
         item {
             MangaRankingListHeader(
                 onFilterChange = onMangaRankFilterSelected,
+                currentFilter = mangaRankFilter,
                 onSeeAll = {sortBy ->
                     navController.navigate(AniCatalogNavOption.MANGA_SEE_ALL_SCREEN.name + "/$sortBy")
                 }

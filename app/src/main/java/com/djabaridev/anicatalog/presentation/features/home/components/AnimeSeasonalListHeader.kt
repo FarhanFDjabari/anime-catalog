@@ -37,11 +37,13 @@ import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
 @Composable
 fun AnimeSeasonalListHeader(
     modifier: Modifier = Modifier,
+    selectedSeason: String = "summer",
+    selectedYear: String = "2023",
     onFilterChange: (String, Int) -> Unit = { _, _ -> },
     onSeeAll: (String, String) -> Unit = {_, _ -> },
 ) {
-    var selectedSeason by remember { mutableStateOf("summer") }
-    var selectedYear by remember { mutableStateOf("2023") }
+    var selectedSeason by remember { mutableStateOf(selectedSeason) }
+    var selectedYear by remember { mutableStateOf(selectedYear) }
 
     Column(
         modifier = modifier

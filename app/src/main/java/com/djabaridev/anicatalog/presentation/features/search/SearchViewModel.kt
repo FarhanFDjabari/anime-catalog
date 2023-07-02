@@ -77,7 +77,7 @@ class SearchViewModel @Inject constructor(
 
     private suspend fun fetchAnimeByKeyword(keyword: String) {
         _animeListEventFlow.emit(UIEvent.Loading)
-        when (val result = repository.getAnimeList(keyword, 5, 0)) {
+        when (val result = repository.getAnimeList(keyword, 100, 0)) {
             is Resource.Success -> {
                 animeList.clear()
                 animeList.addAll(result.data.animangas)

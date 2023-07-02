@@ -31,10 +31,11 @@ import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
 @Composable
 fun MangaRankingListHeader(
     onFilterChange: (MangaRankingEnum) -> Unit = {},
+    currentFilter: MangaRankingEnum = MangaRankingEnum.bypopularity,
     onSeeAll: (String) -> Unit = {},
 ) {
     var isMangaRankingTypeExpanded by remember { mutableStateOf(false) }
-    var currentFilter by remember { mutableStateOf(MangaRankingEnum.bypopularity) }
+    var currentFilter by remember { mutableStateOf(currentFilter) }
 
     Box {
         Row(

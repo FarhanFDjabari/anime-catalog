@@ -197,7 +197,9 @@ fun MangaDetailScreenContent(
                 ) {
                     if (mangaDetail != null) {
                         AsyncImage(
-                            model = mangaDetail.main_picture.large,
+                            model = mangaDetail.main_picture?.large
+                                ?: mangaDetail.main_picture?.medium
+                                ?: "https://geekflare.com/wp-content/uploads/2023/03/img-placeholder.png",
                             contentDescription = mangaDetail.title,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier

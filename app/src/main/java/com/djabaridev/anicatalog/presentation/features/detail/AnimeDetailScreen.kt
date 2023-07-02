@@ -196,7 +196,9 @@ fun AnimeDetailScreenContent(
                 ) {
                     if (animeDetail != null) {
                         AsyncImage(
-                            model = animeDetail.main_picture.large,
+                            model = animeDetail.main_picture?.large
+                                ?: animeDetail.main_picture?.medium
+                                ?: "https://geekflare.com/wp-content/uploads/2023/03/img-placeholder.png",
                             contentDescription = animeDetail.title,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier

@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.djabaridev.anicatalog.data.remote.responses.anime.AnimeDetailResponse
 import com.djabaridev.anicatalog.domain.mapper.toAniMangaListItemEntity

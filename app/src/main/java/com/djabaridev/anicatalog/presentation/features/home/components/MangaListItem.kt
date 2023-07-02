@@ -1,5 +1,6 @@
 package com.djabaridev.anicatalog.presentation.features.home.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,7 @@ import coil.compose.AsyncImage
 import com.djabaridev.anicatalog.domain.entities.AniMangaListItemEntity
 import com.djabaridev.anicatalog.presentation.components.shimmerBrush
 import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
+import com.djabaridev.anicatalog.utils.snakeToReadable
 
 @Composable
 fun MangaListItem(
@@ -57,8 +59,9 @@ fun MangaListItem(
             ) {
                 if (!isLoading) {
                     AsyncImage(
-                        model = data?.mediumPicture
-                            ?: "https://placehold.co/300x400?text=No\nImage",
+                        model = if (data?.mediumPicture.isNullOrEmpty())
+                            "https://geekflare.com/wp-content/uploads/2023/03/img-placeholder.png"
+                        else data?.mediumPicture,
                         contentDescription = data?.title ?: "",
                         contentScale = ContentScale.Crop,
                         alignment = Alignment.Center,
@@ -87,7 +90,7 @@ fun MangaListItem(
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
-                        text = data?.status ?: "-",
+                        text = data?.status?.snakeToReadable() ?: "-",
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Text(

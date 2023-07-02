@@ -47,6 +47,7 @@ import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun ExpandableCard(
+    modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
     expandedColor: Color = MaterialTheme.colorScheme.surface,
     collapsedColor: Color = MaterialTheme.colorScheme.surface,
@@ -54,7 +55,6 @@ fun ExpandableCard(
     onCardArrowClick: () -> Unit = {},
     animDuration: Int = 450,
     expanded: Boolean = false,
-    modifier: Modifier = Modifier,
     expandedContent: @Composable () -> Unit = {},
 ) {
     var isExpanded by remember {

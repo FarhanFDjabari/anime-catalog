@@ -5,7 +5,6 @@ import androidx.paging.PagingState
 import com.djabaridev.anicatalog.data.remote.MyAnimeListAPI
 import com.djabaridev.anicatalog.domain.entities.AniMangaListItemEntity
 import com.djabaridev.anicatalog.domain.mapper.toAniMangaListItemEntity
-import javax.inject.Inject
 
 class AnimePagingSource(
     private val myAnimeListAPI: MyAnimeListAPI,

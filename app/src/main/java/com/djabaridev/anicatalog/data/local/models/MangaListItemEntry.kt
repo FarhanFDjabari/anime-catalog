@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 data class MangaListItemEntry(
     @PrimaryKey
     val id: Int,
-    val largePicture: String,
-    val mediumPicture: String,
+    val largePicture: String?,
+    val mediumPicture: String?,
     val title: String,
     val jpTitle: String,
     val numChapters: Int,

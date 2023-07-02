@@ -4,7 +4,7 @@ import com.djabaridev.anicatalog.data.remote.responses.manga.Author
 
 data class Node(
     val id: Int,
-    val main_picture: MainPicture,
+    val main_picture: MainPicture?,
     val title: String,
     val alternative_titles: AlternativeTitles?,
     val average_episode_duration: Int?,

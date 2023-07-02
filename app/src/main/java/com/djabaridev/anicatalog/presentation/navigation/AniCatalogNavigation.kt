@@ -1,7 +1,5 @@
 package com.djabaridev.anicatalog.presentation.navigation
 
-import android.util.Log
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api

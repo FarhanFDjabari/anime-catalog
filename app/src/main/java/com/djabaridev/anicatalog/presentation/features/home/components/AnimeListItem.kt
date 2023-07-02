@@ -27,6 +27,7 @@ import coil.compose.AsyncImage
 import com.djabaridev.anicatalog.domain.entities.AniMangaListItemEntity
 import com.djabaridev.anicatalog.presentation.components.shimmerBrush
 import com.djabaridev.anicatalog.presentation.theme.AniCatalogThemeWrapper
+import com.djabaridev.anicatalog.utils.snakeToReadable
 
 @Composable
 fun AnimeListItem(
@@ -59,7 +60,7 @@ fun AnimeListItem(
             ) {
                 if (!isLoading) {
                     AsyncImage(
-                        model = data?.mediumPicture ?: "https://placehold.co/300x400?text=No\nImage",
+                        model = data?.mediumPicture ?: "https://geekflare.com/wp-content/uploads/2023/03/img-placeholder.png",
                         contentDescription = data?.title ?: "",
                         contentScale = ContentScale.Crop,
                         alignment = Alignment.Center,
@@ -88,7 +89,7 @@ fun AnimeListItem(
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
-                        text = data?.status ?: "-",
+                        text = data?.status?.snakeToReadable() ?: "-",
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Text(

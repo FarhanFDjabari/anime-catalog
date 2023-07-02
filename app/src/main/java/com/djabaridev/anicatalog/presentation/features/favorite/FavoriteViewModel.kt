@@ -11,9 +11,7 @@ import com.djabaridev.anicatalog.domain.mapper.toAnimeListEntities
 import com.djabaridev.anicatalog.domain.mapper.toMangaListEntities
 import com.djabaridev.anicatalog.domain.repositories.AniCatalogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +30,7 @@ class FavoriteViewModel @Inject constructor(
         it.toMangaListEntities()
     }.asLiveData()
 
-    var isSwipeToLeft: Boolean = false
+    private var isSwipeToLeft: Boolean = false
     private val draggableState = DraggableState {
         isSwipeToLeft = it > 0
     }
